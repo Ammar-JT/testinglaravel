@@ -8,15 +8,25 @@ use Tests\TestCase;
 
 class AboutPageTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get('/');
+    public function testCanViewAboutPage(){
+        //you use this function to see the error before render it into a view, cuz when laravel
+        //.. see an error it render it to view, with this you see the error when testing:
+        $this->withoutExceptionHandling();
 
-        $response->assertStatus(200);
+
+        //simply the test will send a get request to visit /about page.. and the response will stored in resp
+        $resp = $this->get('/about');
+
+        //here is the test assertion, you can do it as the one in ExampleTest.php: 
+        $resp->assertStatus(200);
+
+        //or you can do this also, which means the returning response should contain 'About Me'
+        //.. not nessisary equal to 'About Me': s
+        $resp->assertSee('About Me');
+
+
+        //now run: 
+        //      vendor/bin/phpunit
+
     }
 }
