@@ -7,6 +7,7 @@ use App\Models\Post;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
+
 // I imported this use by myself, in older laravel version it imported by default
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
@@ -40,7 +41,9 @@ class ViewABlogPostTest extends TestCase
         $resp->assertSee($post->body);
 
         //assert that we see post published date
-        $resp->assertSee($post->created_at);
+        //.. toFormattedDateString() only needed in the older version of laravel
+        //.. but i will still use it cuz it helps understanding unit test later:
+        $resp->assertSee($post->created_at->toFormattedDateString());
     }
 
     /**
@@ -50,7 +53,7 @@ class ViewABlogPostTest extends TestCase
 
     public function testViewsA404PageWhenPostIsNotFound(){
         //put this so we can see detailed error not a rendered one (to a view): 
-        //$this->withoutExceptionHandling();
+        //$this->withoutExceptionHandling(); //comment this if you want abort() render the error and return 404.blade.php 
 
         //1- Arrangement <<< Skipped <<<
         

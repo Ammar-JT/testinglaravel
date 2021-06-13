@@ -14,4 +14,8 @@ class Post extends Model
 
     //with this we ignore the mass assignment condition: 
         protected $guarded = [];
+
+    public function createdAt(){
+        return $this->created_at->toFormattedDateString();
+    }
 }

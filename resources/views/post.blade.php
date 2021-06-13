@@ -2,4 +2,4 @@
 <br>
 {{$post->body}}
 
-{{$post->created_at}}
+{{$post->createdAt()}}

@@ -17,4 +17,10 @@ class PostsController extends Controller
         }
         return view('post')->with('post', $post);
     }
+
+
+    public function showAllPosts(){
+        $posts = Post::all();
+        return view('posts')->with('posts', $posts);
+    }
 }

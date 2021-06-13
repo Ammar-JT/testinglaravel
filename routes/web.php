@@ -45,6 +45,9 @@ Route::get('/about', function(){
 
 Route::get('posts/{id}', [App\Http\Controllers\PostsController::class, 'index']);
 
+Route::get('posts', [App\Http\Controllers\PostsController::class, 'showAllPosts']);
+
+
 
 
 
@@ -291,5 +294,95 @@ Route::get('posts/{id}', [App\Http\Controllers\PostsController::class, 'index'])
         error: Failed asserting that '' contains "The page you are looking for could not be found".
         - easy, just write taht in the 404.blade.php
         Success!!!!!!!!
+
+*/
+
+
+
+//----------------------------------------------------------------------
+//                Demo App using Test Driven Development 
+//                + Test function testViewsA404PageWhenPostIsNotFound()
+//-----------------------------------------------------------------------
+/*
+- We want to put a new test function inside the same class ViewABlogPostTest: 
+        testViewsA404PageWhenPostIsNotFound()
+- in this method we will skip the 1-arrang step cuz there is nothing to arrange
+
+- now, If you want to run only this test not all the test, you can add it to group
+  .. and to add it to group, USE THE COMMENT!!!!!!!
+  .. yes, use the comment, write:
+        /**
+         * @group post-not-found
+         * 
+         *
+         * /
+        public function testViewsA404PageWhenPostIsNotFound(){}
+  Incredible right???
+
+- now, to run this test group do this: 
+        vendor/bin/phpunit --group post-not-found
+
+- let's back to business: 
+        error: Trying to get property 'title' of non-object
+        - fix >>> PostsController@index(id){ $post = Post::findOrFail($id);} <<< not just find($id)
+        error: No query results for model [App\Models\Post] INVALID_ID
+        - fix same $post::findOrFail($id) but with try{ $post::findOrFail($id); }catche($e){ return 'asdf';}
+        error: Expected status code 404 but received 200.
+        - we don't want it a success responde XD we want it a fail response!! use: abort(404, 'Page not found');
+        error: NotFoundHttpException: GET http://testinglaravel.test/posts/INVALID_ID
+        - Why? cuz abort() return the 404 ok, but didn't return a the view 404... so make views/errors/404.blade.php
+          .. and the abort() function will call it automatically
+        error: NotFoundHttpException: GET http://testinglaravel.test/posts/INVALID_ID 
+        - Same error?? yes, why?? cuz we used >> $this->withoutExceptionHandling(); << in the test function,
+          .. which means laravel won't render the error into a view, 
+          .. which means abort() won't return the view that we made >> views/errors/404.blade.php <<
+        error: Failed asserting that '' contains "The page you are looking for could not be found".
+        - easy, just write taht in the 404.blade.php
+        Success!!!!!!!!
+
+*/
+
+
+//----------------------------------------------------------------------
+//                Demo App using Test Driven Development: Unit Tests
+//-----------------------------------------------------------------------
+/*
+- Now we finished the basic feature test, we need a unit tests for a cleaner code
+- make a feature test:
+        php artisan make:test PostTest --unit
+
+- now create a function, with the same testing steps: 
+        public function testCanGetCreatedAtFormattedDate(){
+            //same steps:
+                //arrange
+                    //create post
+                //act
+                    //get the value by calling the method
+                //assertion
+                    //assert that returned value is as we expect
+        }
+
+- fill the test class up, and make createdAt() function in the Post model
+
+- I really don't know why, but replace: 
+        use PHPUnit\Framework\TestCase;
+  with: 
+        use Tests\TestCase;
+  first one is for unit test and second one for the feature test, but we won't use it
+  .. even with uint test!! still donno why, but doing that the code works!
+
+- I really must find the replacement of: 
+                $this->withoutExceptionHandling();
+  In Laravel 8, cuz that what makes the whole problem
+
+*/
+
+
+//----------------------------------------------------------------------
+//                Demo App using Test Driven Development: All Posts (back to Feature Test)
+//-----------------------------------------------------------------------
+/*
+- do this: 
+            php artisan make:test ViewAllBlogPostsTest
 
 */
