@@ -47,6 +47,9 @@ Route::get('posts/{id}', [App\Http\Controllers\PostsController::class, 'index'])
 
 Route::get('posts', [App\Http\Controllers\PostsController::class, 'showAllPosts']);
 
+Route::post('store-post', [App\Http\Controllers\PostsController::class, 'storePost']);
+
+
 
 
 
@@ -344,7 +347,7 @@ Route::get('posts', [App\Http\Controllers\PostsController::class, 'showAllPosts'
 
 
 //----------------------------------------------------------------------
-//                Demo App using Test Driven Development: Unit Tests
+//           Demo App using Test Driven Development: Unit Tests
 //-----------------------------------------------------------------------
 /*
 - Now we finished the basic feature test, we need a unit tests for a cleaner code
@@ -378,11 +381,61 @@ Route::get('posts', [App\Http\Controllers\PostsController::class, 'showAllPosts'
 */
 
 
-//----------------------------------------------------------------------
-//                Demo App using Test Driven Development: All Posts (back to Feature Test)
-//-----------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
+//          Demo App using Test Driven Development: All Posts + create posts (back to Feature Test)
+//---------------------------------------------------------------------------------------------------------
 /*
 - do this: 
-            php artisan make:test ViewAllBlogPostsTest
+        php artisan make:test ViewAllBlogPostsTest
+
+- easy, do it like the previous feature tests
+- in this one, we just created 2 posts, and make sure that they exist in all post view
+
+------
+
+- do the same, this: 
+        php artisan make:test CreatePostsTest
+- in this one, we created a post,, and then we make sure that the exact post exist in dbs
+*/
+
+
+//---------------------------------------------------------------------------------------------------------
+//          Demo App using Test Driven Development: 
+//          testing validation
+//---------------------------------------------------------------------------------------------------------
+/*
+- to test validation, we make sure that title is required in the validation and works well
+
+- make function inside the same test class CreatePostsTest{} called:
+        testTitleIsRequiredToCreatePost()
+        testBodyIsRequiredToCreatePost()
+- use assertSessionHasErrors() function to make sure there is an error session for validation
+
 
 */
+
+//---------------------------------------------------------------------------------------------------------
+//          Laravel Dusk (Testing Library)
+//---------------------------------------------------------------------------------------------------------
+/*
+- php unit test is good, but it too traditional, you can use civilized library for testing 
+  .. like Laravel Dusk
+
+- Document is way much better than me in explaination: 
+        https://laravel.com/docs/8.x/dusk
+
+- add the depandancy in your project
+        composer require --dev laravel/dusk
+
+- if you want the dusk to act like a user and have auth, you should register it in service
+  .. provider, but that is very dangorous if you are app in production, 
+  .. NEVER put it in service provider of a production app
+
+- install it in app: 
+        php artisan dusk:install
+
+
+
+*/
+
+
