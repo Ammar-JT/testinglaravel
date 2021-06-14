@@ -47,7 +47,15 @@ Route::get('posts/{id}', [App\Http\Controllers\PostsController::class, 'index'])
 
 Route::get('posts', [App\Http\Controllers\PostsController::class, 'showAllPosts']);
 
-Route::post('store-post', [App\Http\Controllers\PostsController::class, 'storePost']);
+Route::post('store-post', [App\Http\Controllers\PostsController::class, 'storePost'])->middleware('auth');
+
+Route::get('create-post', [App\Http\Controllers\PostsController::class, 'createPost'])->middleware('auth');
+
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 
@@ -435,7 +443,121 @@ Route::post('store-post', [App\Http\Controllers\PostsController::class, 'storePo
         php artisan dusk:install
 
 
+- Holy shit, just go and see tests/Browser/ExampleTest.php, and run: 
+        php artisan dusk
+
+- Error will showed up, in .env just change the app url to what you use now in local host: 
+        APP_URL=http://testing.laravel
+  Now do the test again and it should work
+
+-----
+
+- Let's make our own dusk test: 
+        php artisan dusk:make LoginTest
+- fill it with this amazing magical hacking stuff: 
+        $user = User::factory()->create();
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->visit('/login')
+                    ->type('email', $user->email)
+                    ->type('password', 'password')
+                    ->press('Login')
+                    ->assertPathIs('/home');
+        }
+
+- now run the dusk test: 
+        php artisan dusk --group login
+  Erro will showed up cuz you didn't make the '/login' view and form
+  .. we're not gonna do it, larave will do it for us, just set up the auth and it's ui
+
+- After setting up the auth, test again: 
+        php artisan dusk --group login
+  Success!!! >> OK (1 test, 1 assertion) <<
+
+
 
 */
+
+
+//---------------------------------------------------------------------------------------------------
+//              Post Factory
+//---------------------------------------------------------------------------------------------------
+/*
+- To make a factory:
+        php artisan make:factory PostFactory
+
+- You will find the factories folder in the database folder (folder of migrations file)
+- Go the factory file to  set up your factory
+
+- fill the factory with what you need
+
+- now you can use the factory in LoginTest.php
+
+*/
+
+
+//---------------------------------------------------------------------------------------------------------
+//          Laravel Dusk: testing viewing posts + testing create post + test only authed can create post
+//---------------------------------------------------------------------------------------------------------
+/*
+- make testAUserCanViewAPost() function, and inside it use the custom post factory that you made,
+  .. and also use the amazing magical hacking test methods:
+        $post = Post::factory()->create();
+        $this->browse(function (Browser $browser) use ($post) {
+            $browser->visit('/posts')
+                    ->clickLink('View Post Details')
+                    ->assertPathIs("/posts/$post->id")
+                    ->assertSee($post->title)
+                    ->assertSee($post->createdAt());
+        });
+
+- I have many errors , but happend cuz i confused between '/post/{id}' and '/posts/{id}'
+
+
+-------
+
+- do: 
+        php artisan dusk:make CreatePostTest
+
+- Again, fill it with this hacking stuff: 
+        public function testAuthUserCanCreatePost()
+        {
+                $user = User::factory()->create();
+                
+                $this->browse(function (Browser $browser) use ($user) {
+                $browser->loginAs($user)
+                        ->visit('/create-post')
+                        ->type('title', 'New Post')
+                        ->type('body', 'New Body')
+                        ->press('Save Post')
+                        ->assertPathIs('/posts')
+                        ->assertSee('New post')
+                        ->assertSee('New body');
+                });
+        }
+
+- an error will showed up, and that's cuz you didn't make the route for create-post, so do it
+
+- another error you struggle with saying 'New Body' text doesn't showed up in the template,
+  .. the problem was that i created it with 'New Body' and assert see 'New body',
+  .. yeah, just one letter!!!!!
+
+- Success!!
+
+
+----
+- make a function called testOnlyAuthUserCanCreatePost() that have the exact stuff of the previous one
+
+- fix the code as you can see it in testOnlyAuthUserCanCreatePost()
+
+- Error will pop up, cuz the create-post didn't redirect the user to login page,
+  .. you already know how to fix that, just put an auth middleware in the create-post route
+
+- Success!!
+
+
+
+*/
+
+
 
 

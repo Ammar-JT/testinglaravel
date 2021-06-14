@@ -5,4 +5,6 @@ asdfsadf
 
     {{$post->body}}
 
+    <a href="/posts/{{$post->id}}">View Post Details</a>
+
 @endforeach
